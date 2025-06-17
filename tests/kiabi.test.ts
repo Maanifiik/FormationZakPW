@@ -45,4 +45,7 @@ test("Test du parcours d'achat sur Kiabi", async ({ page, baseURL }) => {
 
   // Vérifier la page de paiement
  await cartPage.verifyPaymentPage(testData.country);
+
+  // test le workflow
+ await cartPage.verifyPaymentPage(testData.country);
 });
