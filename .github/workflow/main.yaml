@@ -1,59 +1,24 @@
-name: Execution des scénarios de test API
+name: Execution des scénarios de test API - CI
 on:
   push:
-  workflow_dispatch:
-  workflow_call:
-    secrets:
-      DKTUNITED_TOKEN:
-        required: true
-      TOKEN_PP_PWD:
-        required: true
+   branches: [ mainY,Maanifiik-patch-1-1 ]    
+  pull_request:
+    branches: [ mainYMaanifiik-patch-1-1 ]
 jobs:
-  build:
-    environment:
-      name: PREPROD
-    env:
-      CYPRESS_APIKEY: ${{ secrets.APIKEY }}
-      CYPRESS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CYPRESS_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      CYPRESS_URL_POST_USER: ${{ secrets.URL_POST_USER }}
-      CYPRESS_URL_CALL_TOKEN:  ${{ secrets.URL_CALL_TOKEN }}
-      CYPRESS_URL_PUT_USER:  ${{ secrets.URL_PUT_USER }}
-      CYPRESS_URL_FRONT: ${{ secrets.URL_FRONT }}
-      CYPRESS_LOGIN: ${{ secrets.LOGIN }}
-      CYPRESS_PWD: ${{ secrets.PWD }}
-    runs-on: [self-hosted, decathlon]
+ test:
     timeout-minutes: 60
-    permissions:
-      actions: write
-      checks: write
-      contents: write
-      deployments: write
-      issues: write
-      id-token: write
-      packages: write
-      pull-requests: write
-      repository-projects: write
-      security-events: write
-      statuses: write
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success'
     steps:
-      - name: pre/post clean
-        id: clean
-        uses: dktunited/.github/actions/cleaner@main        
-      - uses: actions/checkout@v3
-        id: checkout
-        with:
-          fetch-depth: 0  
-      - name: Set up JDK 17
-        id: setup-jdk
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-          overwrite-settings: false
-      - name: install npm
-        id: install_npm
-        run: npm install
-      - name: Compile
-        id: compile
-        run: npx cypress run
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+      env:
+        PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
