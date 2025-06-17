@@ -2,9 +2,9 @@ name: Execution des scénarios de test API - CI
 on:
   push:
     workflow_dispatch:
-   branches: [ mainY,Maanifiik-patch-1-1 ]    
+   branches: [ mainY ]    
   pull_request:
-    branches: [ mainY,Maanifiik-patch-1-1 ]
+    branches: [ mainY ]
 jobs:
  test:
     timeout-minutes: 60
