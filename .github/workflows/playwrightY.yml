@@ -1,25 +1,38 @@
 name: Execution des scénarios de test API - CI
 on:
   push:
-    workflow_dispatch:
-   branches: [ mainY ]    
+   # branches: [ mainY ]    est-ce que je peux faire les deux run manuel et auto ?  
+  workflow_dispatch: 
   pull_request:
     branches: [ mainY ]
+  # pas mis de workflow call  , code Zak
 jobs:
- test:
+ test:   # nom du job
     timeout-minutes: 60
-    runs-on: macos-latest
-    if: github.event.deployment_status.state == 'success'
+    runs-on: macos-latest  # runner ? 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - name: pre/post clean   # je ne maitrise pas
+      id: clean
+      uses: xxx/.github/actions/cleaner@main 
+    - uses: actions/checkout@v4   # recupère l'historique complet, pourquoi faire? 
+      id: checkout   
+      with:
+        fetch-depth: 0 
+    - uses: actions/setup-node@v4 # instal Node.js LTS pour exécuter Playwright.
       with:
         node-version: lts/*
     - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright
+      run: npm install  # installation complete avec les dependance 
+    - name: Install Playwright 
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
       env:
         PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+
+
+
+
+
+
+        
