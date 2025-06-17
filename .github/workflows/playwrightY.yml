@@ -11,9 +11,9 @@ jobs:
     timeout-minutes: 60
     runs-on: macos-latest  # runner ? 
     steps:
-    - name: pre/post clean   # je ne maitrise pas
-      id: clean
-      uses: xxx/.github/actions/cleaner@main 
+    #- name: pre/post clean   # je ne maitrise pas
+      #id: clean
+     # uses: xxx/.github/actions/cleaner@main 
     - uses: actions/checkout@v4   # recupère l'historique complet, pourquoi faire? 
       id: checkout   
       with:
@@ -27,8 +27,8 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
-      env:
-        PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+      #env:
+      #  PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
 
 
 
